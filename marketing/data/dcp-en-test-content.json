@@ -1,0 +1,26 @@
+[
+  {
+    "id": "DCP-001-en",
+    "product": "dcp",
+    "language": "en",
+    "status": "ready",
+    "text": "Create a clear overview of your money before making your next financial decision.",
+    "postingTime": ""
+  },
+  {
+    "id": "DCP-002-en",
+    "product": "dcp",
+    "language": "en",
+    "status": "ready",
+    "text": "Put all your bills and expenses into one simple overview.",
+    "postingTime": ""
+  },
+  {
+    "id": "DCP-003-en",
+    "product": "dcp",
+    "language": "en",
+    "status": "ready",
+    "text": "See where your money goes and create your own cash plan.",
+    "postingTime": ""
+  }
+]
