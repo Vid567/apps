@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "format": "csv",
+  "columns": [
+    "Post ID",
+    "Product",
+    "Language",
+    "Campaign",
+    "Text",
+    "Posting Time",
+    "Status",
+    "UTM URL"
+  ],
+  "defaultStatus": "ready",
+  "utmRequired": true,
+  "batchSize": 10
+}
