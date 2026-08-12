@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Campaign Builder</title>
+<style>
+body { font-family: Arial, sans-serif; margin: 40px; }
+label { display:block; margin-top:12px; }
+select, button { padding:8px; margin-top:5px; }
+button { cursor:pointer; }
+</style>
+</head>
+<body>
+<h1>Marketing Campaign Builder</h1>
+
+<label>Product</label>
+<select id="product">
+<option value="dcp">DailyCashPlan</option>
+<option value="pp">PantryPlan</option>
+<option value="stamp">AI Stamp Collection Scanner</option>
+<option value="coin">AI Coin Collection Scanner</option>
+</select>
+
+<label>Language</label>
+<select id="language">
+<option value="en">English</option>
+</select>
+
+<label>Batch size</label>
+<select id="batch">
+<option value="10">10 posts</option>
+<option value="20">20 posts</option>
+<option value="50">50 posts</option>
+</select>
+
+<button id="generate">Generate Buffer CSV</button>
+
+<p id="status">Ready</p>
+
+<script>
+document.getElementById('generate').addEventListener('click', () => {
+  const product = document.getElementById('product').value;
+  const language = document.getElementById('language').value;
+  const batch = document.getElementById('batch').value;
+  document.getElementById('status').textContent =
+    `Campaign prepared: ${product}_${language}_beta (${batch} posts)`;
+});
+</script>
+</body>
+</html>
