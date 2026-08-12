@@ -26,7 +26,7 @@ jobs:
         run: node marketing/build-content-database.mjs
       - name: Validate database
         run: |
-          node -e "const d=require('./marketing/content-database.json'); if(d.source_count!==150||d.posts.length!==150) process.exit(1); if(d.posts.some(p=>p.character_count>500)) process.exit(2); if(d.posts.some(p=>!p.multilingual_message)) process.exit(3); console.log('PASS: 150 multilingual-aware source posts, all <= 500 chars')"
+          node -e "const d=require('./marketing/content-database.json'); if(d.source_count!==200||d.posts.length!==200) process.exit(1); if(d.posts.some(p=>p.character_count>500)) process.exit(2); if(d.posts.some(p=>!p.multilingual_message)) process.exit(3); const counts=Object.groupBy(d.posts,p=>p.product_key); for(const k of ['dcp','pp','stamp','coin']) if((counts[k]||[]).length!==50) process.exit(4); console.log('PASS: 200 English source posts across 4 products, all <= 500 chars')"
       - name: Commit refreshed database
         run: |
           git add marketing/content-database.json marketing/content-database.csv
