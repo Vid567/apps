@@ -1,0 +1,61 @@
+{
+  "version": 1,
+  "tracking": {
+    "source": "threads",
+    "medium": "social",
+    "utm": {
+      "source": "threads",
+      "medium": "social"
+    }
+  },
+  "campaigns": [
+    {
+      "id": "dcp_en_beta",
+      "product": "DailyCashPlan",
+      "language": "en",
+      "batchSize": 10,
+      "statusFlow": [
+        "ready",
+        "scheduled",
+        "buffer-exported",
+        "published"
+      ]
+    },
+    {
+      "id": "pp_en_beta",
+      "product": "PantryPlan",
+      "language": "en",
+      "batchSize": 10,
+      "statusFlow": [
+        "ready",
+        "scheduled",
+        "buffer-exported",
+        "published"
+      ]
+    },
+    {
+      "id": "stamp_en_beta",
+      "product": "AI Stamp Collection Scanner",
+      "language": "en",
+      "batchSize": 10,
+      "statusFlow": [
+        "ready",
+        "scheduled",
+        "buffer-exported",
+        "published"
+      ]
+    },
+    {
+      "id": "coin_en_beta",
+      "product": "AI Coin Collection Scanner",
+      "language": "en",
+      "batchSize": 10,
+      "statusFlow": [
+        "ready",
+        "scheduled",
+        "buffer-exported",
+        "published"
+      ]
+    }
+  ]
+}
