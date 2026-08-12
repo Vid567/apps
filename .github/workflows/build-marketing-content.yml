@@ -26,15 +26,15 @@ jobs:
         run: node marketing/build-content-database.mjs
       - name: Validate database
         run: |
-          node -e "const d=require('./marketing/content-database.json'); if(d.source_count!==200||d.posts.length!==200) process.exit(1); if(d.posts.some(p=>p.character_count>500)) process.exit(2); if(d.posts.some(p=>!p.multilingual_message)) process.exit(3); const counts=Object.groupBy(d.posts,p=>p.product_key); for(const k of ['dcp','pp','stamp','coin']) if((counts[k]||[]).length!==50) process.exit(4); console.log('PASS: 200 English source posts across 4 products, all <= 500 chars')"
-      - name: Commit refreshed database
+          node -e "const d=require('./marketing/content-database.json'); const q=d.qa; if(d.source_count!==200||d.posts.length!==200) process.exit(1); if(!q||q.over_limit.length||q.missing_cta.length||q.missing_destination.length||q.missing_availability.length||q.exact_duplicates.length) process.exit(2); for(const k of ['dcp','pp','stamp','coin']) if(q.by_product[k]!==50) process.exit(3); console.log('PASS: 200 English master posts; 50/product; CTA, links and language message present; <=500 chars; no exact duplicates')"
+      - name: Commit refreshed database and QA
         run: |
-          git add marketing/content-database.json marketing/content-database.csv
+          git add marketing/content-database.json marketing/content-database.csv marketing/qa-report.json
           if git diff --cached --quiet; then
             echo 'No content changes.'
             exit 0
           fi
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git commit -m 'Refresh central marketing content database'
+          git commit -m 'Refresh central marketing content database and QA'
           git push
