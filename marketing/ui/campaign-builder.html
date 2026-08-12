@@ -13,58 +13,23 @@ button { cursor:pointer; }
 </head>
 <body>
 <h1>Marketing Campaign Builder</h1>
-
 <label>Product</label>
-<select id="product">
-<option value="dcp">DailyCashPlan</option>
-<option value="pp">PantryPlan</option>
-<option value="stamp">AI Stamp Collection Scanner</option>
-<option value="coin">AI Coin Collection Scanner</option>
-</select>
-
-<label>Language</label>
-<select id="language">
-<option value="en">English</option>
-</select>
-
-<label>Batch size</label>
-<select id="batch">
-<option value="10">10 posts</option>
-<option value="20">20 posts</option>
-<option value="50">50 posts</option>
-</select>
-
+<select id="product"><option value="dcp">DailyCashPlan</option><option value="pp">PantryPlan</option><option value="stamp">AI Stamp Collection Scanner</option><option value="coin">AI Coin Collection Scanner</option></select>
+<label>Language</label><select id="language"><option value="en">English</option></select>
+<label>Batch size</label><select id="batch"><option value="10">10 posts</option><option value="20">20 posts</option><option value="50">50 posts</option></select>
 <button id="generate">Generate Buffer CSV</button>
 <div class="result" id="status">Ready</div>
-
 <script src="campaign-bootstrap.js"></script>
 <script src="campaign-builder-integration.js"></script>
 <script>
-function campaignRequest() {
-  return {
-    product: document.getElementById('product').value,
-    language: document.getElementById('language').value,
-    batchSize: Number(document.getElementById('batch').value)
-  };
-}
-
-async function runCampaignBuilder() {
-  const request = campaignRequest();
-  const posts = await window.CampaignBootstrap.prepareCampaignData(
-    request.product,
-    request.language
-  );
-
-  const result = await window.CampaignBuilderIntegration.generateCampaignExport({
-    ...request,
-    posts
-  });
-
-  document.getElementById('status').textContent =
-    `Campaign prepared: ${result.product}_${result.language}_beta (${posts.length} posts loaded)`;
-}
-
-document.getElementById('generate').addEventListener('click', runCampaignBuilder);
+const BASE_URLS={dcp:'https://vid567.github.io/dailycashplan/',pp:'https://vid567.github.io/pantryplan/',stamp:'https://vid567.github.io/ai-stamp-collection-scanner/'};
+function esc(v){return `"${String(v??'').replaceAll('"','""')}"`;}
+function utm(base,p,l,id){const q=new URLSearchParams({utm_source:'threads',utm_medium:'social',utm_campaign:`${p}_${l}_beta`,utm_content:id});return `${base}?${q}`;}
+function csv(batch,s){const h=['Post ID','Product','Language','Campaign','Text','Posting Time','Status','UTM URL'];const rows=batch.map(x=>[x.id,s.product,s.language,`${s.product}_${s.language}_beta`,x.text,x.postingTime||'','ready',utm(s.baseUrl,s.product,s.language,x.id)]);return [h,...rows].map(r=>r.map(esc).join(',')).join('\r\n');}
+function validate(out){const h=out.split(/\r?\n/)[0];const req=['Post ID','Product','Language','Campaign','Text','Posting Time','Status','UTM URL'];const missing=req.filter(x=>!h.includes(x));return {passed:missing.length===0,hasUtm:out.includes('utm_source=threads')&&out.includes('utm_campaign='),missing};}
+function download(out,name){const b=new Blob([out],{type:'text/csv;charset=utf-8;'});const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),0);}
+async function run(){const product=document.getElementById('product').value,language=document.getElementById('language').value,batchSize=Number(document.getElementById('batch').value),status=document.getElementById('status');try{status.textContent='Loading and validating…';const posts=await CampaignBootstrap.prepareCampaignData(product,language);if(!posts.length)throw new Error('No ready content found for this product/language.');const campaign=await CampaignBuilderIntegration.generateCampaignExport({product,language,batchSize,posts});const settings={product,language,baseUrl:BASE_URLS[product]};if(!settings.baseUrl)throw new Error('No production URL configured for this product.');const out=csv(campaign.batch,settings),v=validate(out);if(!v.passed||!v.hasUtm)throw new Error(`Validation failed${v.missing.length?': '+v.missing.join(', '):''}.`);download(out,`${campaign.id}-${campaign.count}-posts.csv`);status.textContent=`✓ Validated and downloaded: ${campaign.id} (${campaign.count} posts)`;}catch(e){status.textContent=`✗ ${e.message}`;}}
+document.getElementById('generate').addEventListener('click',run);
 </script>
 </body>
 </html>
