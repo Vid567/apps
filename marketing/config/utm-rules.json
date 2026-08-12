@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "rules": {
+    "source": "threads",
+    "medium": "social",
+    "campaignFormat": "{product}_{language}_beta",
+    "contentFormat": "{postId}",
+    "examples": [
+      {
+        "product": "dcp",
+        "language": "en",
+        "campaign": "dcp_en_beta",
+        "content": "DCP-001-en"
+      }
+    ]
+  }
+}
