@@ -2,6 +2,10 @@ name: Build marketing content database
 
 on:
   workflow_dispatch:
+  push:
+    paths:
+      - 'marketing/**'
+      - '.github/workflows/build-marketing-content.yml'
   schedule:
     - cron: '17 4 * * 1'
 
