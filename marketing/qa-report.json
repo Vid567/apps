@@ -1,15 +1,18 @@
 {
-  "generated_at": "2026-08-12T15:06:27.834Z",
-  "total": 200,
+  "generated_at": "2026-08-12T15:07:15.321Z",
+  "total": 400,
+  "by_language": {
+    "en": 200,
+    "nl": 200
+  },
   "by_product": {
-    "dcp": 50,
-    "pp": 50,
-    "stamp": 50,
-    "coin": 50
+    "dcp": 100,
+    "pp": 100,
+    "stamp": 100,
+    "coin": 100
   },
   "over_limit": [],
-  "missing_cta": [],
-  "missing_destination": [],
-  "missing_availability": [],
+  "missing_ai_notice_nl": [],
+  "wrong_review_status": [],
   "exact_duplicates": []
 }
