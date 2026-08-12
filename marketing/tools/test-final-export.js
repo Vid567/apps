@@ -1,14 +1,12 @@
-const assert=require('assert');
-const posts=require('../data/dcp-en-test-content.json');
+const fs=require('fs');const assert=require('assert');
+const db=JSON.parse(fs.readFileSync(require.resolve('../content-database.json'),'utf8'));
+const posts=db.posts.filter(p=>p.product_key==='dcp'&&p.language==='en'&&p.review_status==='master'&&p.status==='SOURCE').slice(0,10);
 const headers=['Post ID','Product','Language','Campaign','Text','Posting Time','Status','UTM URL'];
 const esc=v=>`"${String(v??'').replaceAll('"','""')}"`;
-const base='https://vid567.github.io/dailycashplan/';
-const rows=posts.map(p=>[p.id,'dcp','en','dcp_en_beta',p.text,p.postingTime||'','ready',`${base}?${new URLSearchParams({utm_source:'threads',utm_medium:'social',utm_campaign:'dcp_en_beta',utm_content:p.id})}`]);
+const rows=posts.map(p=>[p.id,'dcp','en','dcp_beta_en',p.text,p.planned_at||'','ready',p.tracking_url]);
 const csv=[headers,...rows].map(r=>r.map(esc).join(',')).join('\r\n');
-assert.equal(posts.length,3);
-assert(csv.includes('dcp_en_beta'));
-assert(csv.includes('utm_source=threads'));
-assert(csv.includes('utm_campaign=dcp_en_beta'));
-assert(csv.includes('utm_content=DCP-001-en'));
-for(const h of headers)assert(csv.split(/\r?\n/)[0].includes(h));
-console.log('PASS final export regression: 3/3 posts, headers OK, campaign OK, UTM OK');
+assert.equal(posts.length,10,'Expected 10 production DCP EN posts');
+for(const h of headers)assert(csv.split(/\r?\n/)[0].includes(h),`Missing header ${h}`);
+for(const p of posts){assert(p.tracking_url.includes('utm_source=threads'));assert(p.tracking_url.includes('utm_campaign=dcp_beta_en'));assert(p.tracking_url.includes('utm_content='));assert(csv.includes(p.id));}
+assert.equal(new Set(posts.map(p=>p.id)).size,10,'Duplicate post IDs');
+console.log('PASS production export regression: 10/10 DCP EN posts, unique IDs, headers and canonical UTM tracking OK');
