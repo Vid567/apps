@@ -1,22 +1,23 @@
 <!DOCTYPE html>
-<html lang="en"><head><meta charset="UTF-8"><title>Campaign Builder</title><style>body{font-family:Arial,sans-serif;margin:40px}label{display:block;margin-top:12px}select,input,button{padding:8px;margin-top:5px}button{cursor:pointer}.result{margin-top:20px}</style></head><body>
+<html lang="en"><head><meta charset="UTF-8"><title>Campaign Builder</title><style>body{font-family:Arial,sans-serif;margin:40px;max-width:720px}label{display:block;margin-top:12px}select,input,button{padding:8px;margin-top:5px}button{cursor:pointer}.result,.note{margin-top:20px}.note{padding:12px;background:#f5f5f5;border-radius:8px}</style></head><body>
 <h1>Marketing Campaign Builder</h1>
 <label>Product</label><select id="product"><option value="dcp">DailyCashPlan</option><option value="pp">PantryPlan</option><option value="stamp">AI Stamp Collection Scanner</option><option value="coin">AI Coin Collection Scanner</option></select>
 <label>Language</label><select id="language"><option value="en">English</option></select>
-<label>Posts</label><select id="batch"><option value="10">10 posts / 5 days</option><option value="20" selected>20 posts / 10 days</option><option value="50">50 posts / 25 days</option></select>
+<label>Buffer plan</label><select id="plan"><option value="free" selected>Free — max. 10 queued posts</option><option value="paid">Paid</option></select>
+<label>Batch</label><select id="batch"><option value="1" selected>Batch 1 — posts 1–10 (5 days)</option><option value="2">Batch 2 — posts 11–20 (next 5 days)</option></select>
 <label>First posting date</label><input id="startDate" type="date">
 <p>Schedule: 2 posts per day at 10:00 and 19:00 (local Buffer timezone).</p>
+<div class="note">Buffer Free accepts only 10 queued posts. Upload Batch 1 first. After those posts have been published and queue space is available, generate Batch 2.</div>
 <button id="generate">Generate Buffer CSV</button><div class="result" id="status">Ready</div>
 <script src="campaign-bootstrap.js"></script><script src="campaign-builder-integration.js"></script><script>
-const esc=v=>`"${String(v??'').replaceAll('"','""')}"`;
-const pad=n=>String(n).padStart(2,'0');
+const esc=v=>`"${String(v??'').replaceAll('"','""')}"`,pad=n=>String(n).padStart(2,'0');
 function localDate(d){return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`}
-function schedule(batch,start){return batch.map((x,i)=>{const d=new Date(`${start}T12:00:00`);d.setDate(d.getDate()+Math.floor(i/2));return{...x,postingTime:`${localDate(d)} ${i%2===0?'10:00':'19:00'}`}})}
-function bufferCsv(batch){const h=['Text','Image URL','Tags','Posting Time'];const rows=batch.map(x=>[x.text,'','',x.postingTime]);return[h,...rows].map(r=>r.map(esc).join(',')).join('\r\n')}
-function validate(out,batch,requested){const header=out.split(/\r?\n/)[0],req=['Text','Image URL','Tags','Posting Time'],missing=req.filter(x=>!header.includes(x)),bad=batch.filter(x=>!x.text||!x.postingTime||!x.trackingUrl||!x.text.includes(x.trackingUrl));return{passed:missing.length===0&&batch.length===requested&&bad.length===0,missing,bad}}
+function addDays(start,n){const d=new Date(`${start}T12:00:00`);d.setDate(d.getDate()+n);return localDate(d)}
+function schedule(batch,start){return batch.map((x,i)=>{const d=addDays(start,Math.floor(i/2));return{...x,postingTime:`${d} ${i%2===0?'10:00':'19:00'}`}})}
+function bufferCsv(batch){const h=['Text','Image URL','Tags','Posting Time'];return[h,...batch.map(x=>[x.text,'','',x.postingTime])].map(r=>r.map(esc).join(',')).join('\r\n')}
 function download(out,name){const b=new Blob([out],{type:'text/csv;charset=utf-8;'}),u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),0)}
-function tomorrow(){const d=new Date();d.setDate(d.getDate()+1);return localDate(d)}
+function tomorrow(){return addDays(localDate(new Date()),1)}
 document.getElementById('startDate').value=tomorrow();
-async function run(){const product=document.getElementById('product').value,language=document.getElementById('language').value,batchSize=Number(document.getElementById('batch').value),start=document.getElementById('startDate').value,status=document.getElementById('status');try{if(!start)throw new Error('Choose a first posting date.');status.textContent='Preparing Buffer schedule…';const posts=await CampaignBootstrap.prepareCampaignData(product,language);if(posts.length<batchSize)throw new Error(`Only ${posts.length} production posts available; ${batchSize} requested.`);const campaign=await CampaignBuilderIntegration.generateCampaignExport({product,language,batchSize,posts});campaign.batch=schedule(campaign.batch,start);const out=bufferCsv(campaign.batch),v=validate(out,campaign.batch,batchSize);if(!v.passed)throw new Error(`Validation failed${v.missing.length?': missing '+v.missing.join(', '):''}${v.bad.length?`: ${v.bad.length} incomplete posts`:''}.`);download(out,`buffer-${campaign.id}-${batchSize}-posts-${start}.csv`);status.textContent=`✓ Buffer CSV downloaded: ${batchSize} posts, ${start} onward, 10:00 + 19:00.`}catch(e){status.textContent=`✗ ${e.message}`}}
+async function run(){const product=document.getElementById('product').value,language=document.getElementById('language').value,plan=document.getElementById('plan').value,batchNo=Number(document.getElementById('batch').value),start=document.getElementById('startDate').value,status=document.getElementById('status');try{status.textContent='Preparing Buffer schedule…';const posts=await CampaignBootstrap.prepareCampaignData(product,language);const offset=(batchNo-1)*10;if(posts.length<offset+10)throw new Error(`Need at least ${offset+10} production posts.`);const selected=posts.slice(offset,offset+10);const campaign=await CampaignBuilderIntegration.generateCampaignExport({product,language,batchSize:10,posts:selected});campaign.batch=schedule(campaign.batch,start);if(campaign.batch.some(x=>!x.text||!x.trackingUrl||!x.text.includes(x.trackingUrl)))throw new Error('Validation failed: incomplete post or tracking URL.');const out=bufferCsv(campaign.batch);download(out,`buffer-${product}_${language}-batch${batchNo}-10-posts-${start}.csv`);status.textContent=`✓ Batch ${batchNo} downloaded: posts ${offset+1}–${offset+10}, ${start} onward, 10:00 + 19:00.`}catch(e){status.textContent=`✗ ${e.message}`}}
 document.getElementById('generate').addEventListener('click',run);
 </script></body></html>
