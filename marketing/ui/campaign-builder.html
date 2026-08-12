@@ -39,9 +39,6 @@ button { cursor:pointer; }
 <div class="result" id="status">Ready</div>
 
 <script>
-// Integration point for the safe export controller.
-// The campaign engine can inject the actual modules here.
-
 function campaignRequest() {
   return {
     product: document.getElementById('product').value,
@@ -50,12 +47,16 @@ function campaignRequest() {
   };
 }
 
-document.getElementById('generate').addEventListener('click', () => {
+async function runCampaignBuilder() {
   const request = campaignRequest();
 
+  const result = await window.CampaignBuilderIntegration.generateCampaignExport(request);
+
   document.getElementById('status').textContent =
-    `Campaign ready for validation: ${request.product}_${request.language}_beta (${request.batchSize} posts)`;
-});
+    `Campaign prepared: ${result.product}_${result.language}_beta (${result.batchSize} posts)`;
+}
+
+document.getElementById('generate').addEventListener('click', runCampaignBuilder);
 </script>
 </body>
 </html>
