@@ -8,6 +8,7 @@ body { font-family: Arial, sans-serif; margin: 40px; }
 label { display:block; margin-top:12px; }
 select, button { padding:8px; margin-top:5px; }
 button { cursor:pointer; }
+.result { margin-top:20px; }
 </style>
 </head>
 <body>
@@ -35,15 +36,25 @@ button { cursor:pointer; }
 
 <button id="generate">Generate Buffer CSV</button>
 
-<p id="status">Ready</p>
+<div class="result" id="status">Ready</div>
 
 <script>
+// Integration point for the safe export controller.
+// The campaign engine can inject the actual modules here.
+
+function campaignRequest() {
+  return {
+    product: document.getElementById('product').value,
+    language: document.getElementById('language').value,
+    batchSize: Number(document.getElementById('batch').value)
+  };
+}
+
 document.getElementById('generate').addEventListener('click', () => {
-  const product = document.getElementById('product').value;
-  const language = document.getElementById('language').value;
-  const batch = document.getElementById('batch').value;
+  const request = campaignRequest();
+
   document.getElementById('status').textContent =
-    `Campaign prepared: ${product}_${language}_beta (${batch} posts)`;
+    `Campaign ready for validation: ${request.product}_${request.language}_beta (${request.batchSize} posts)`;
 });
 </script>
 </body>
