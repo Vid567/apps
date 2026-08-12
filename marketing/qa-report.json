@@ -1,0 +1,15 @@
+{
+  "generated_at": "2026-08-12T12:59:37.835Z",
+  "total": 200,
+  "by_product": {
+    "dcp": 50,
+    "pp": 50,
+    "stamp": 50,
+    "coin": 50
+  },
+  "over_limit": [],
+  "missing_cta": [],
+  "missing_destination": [],
+  "missing_availability": [],
+  "exact_duplicates": []
+}
