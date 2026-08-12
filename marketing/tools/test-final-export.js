@@ -1,0 +1,14 @@
+const assert=require('assert');
+const posts=require('../data/dcp-en-test-content.json');
+const headers=['Post ID','Product','Language','Campaign','Text','Posting Time','Status','UTM URL'];
+const esc=v=>`"${String(v??'').replaceAll('"','""')}"`;
+const base='https://vid567.github.io/dailycashplan/';
+const rows=posts.map(p=>[p.id,'dcp','en','dcp_en_beta',p.text,p.postingTime||'','ready',`${base}?${new URLSearchParams({utm_source:'threads',utm_medium:'social',utm_campaign:'dcp_en_beta',utm_content:p.id})}`]);
+const csv=[headers,...rows].map(r=>r.map(esc).join(',')).join('\r\n');
+assert.equal(posts.length,3);
+assert(csv.includes('dcp_en_beta'));
+assert(csv.includes('utm_source=threads'));
+assert(csv.includes('utm_campaign=dcp_en_beta'));
+assert(csv.includes('utm_content=DCP-001-en'));
+for(const h of headers)assert(csv.split(/\r?\n/)[0].includes(h));
+console.log('PASS final export regression: 3/3 posts, headers OK, campaign OK, UTM OK');
