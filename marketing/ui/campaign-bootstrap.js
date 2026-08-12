@@ -1,33 +1,25 @@
 /*
  * Campaign Builder browser bootstrap
- *
- * Loads the campaign data source and prepares the browser workflow.
+ * Loads the production marketing content database.
  */
 
-const CAMPAIGN_SOURCES = {
-  dcp_en: '../data/dcp-en-test-content.json'
-};
+const CONTENT_DATABASE = '../content-database.json';
 
 async function prepareCampaignData(product, language) {
-  const key = `${product}_${language}`;
-  const source = CAMPAIGN_SOURCES[key];
+  const response = await fetch(CONTENT_DATABASE, { cache: 'no-store' });
+  if (!response.ok) throw new Error(`Content database load failed: ${response.status}`);
 
-  if (!source) {
-    return [];
-  }
-
-  const response = await fetch(source);
-  const posts = await response.json();
+  const database = await response.json();
+  const posts = Array.isArray(database.posts) ? database.posts : [];
 
   return posts.filter(post =>
-    post.product === product &&
+    post.product_key === product &&
     post.language === language &&
-    post.status === 'ready'
+    post.review_status === 'master' &&
+    post.status === 'SOURCE'
   );
 }
 
 if (typeof window !== 'undefined') {
-  window.CampaignBootstrap = {
-    prepareCampaignData
-  };
+  window.CampaignBootstrap = { prepareCampaignData };
 }
