@@ -35,9 +35,10 @@ button { cursor:pointer; }
 </select>
 
 <button id="generate">Generate Buffer CSV</button>
-
 <div class="result" id="status">Ready</div>
 
+<script src="campaign-bootstrap.js"></script>
+<script src="campaign-builder-integration.js"></script>
 <script>
 function campaignRequest() {
   return {
@@ -49,11 +50,18 @@ function campaignRequest() {
 
 async function runCampaignBuilder() {
   const request = campaignRequest();
+  const posts = await window.CampaignBootstrap.prepareCampaignData(
+    request.product,
+    request.language
+  );
 
-  const result = await window.CampaignBuilderIntegration.generateCampaignExport(request);
+  const result = await window.CampaignBuilderIntegration.generateCampaignExport({
+    ...request,
+    posts
+  });
 
   document.getElementById('status').textContent =
-    `Campaign prepared: ${result.product}_${result.language}_beta (${result.batchSize} posts)`;
+    `Campaign prepared: ${result.product}_${result.language}_beta (${posts.length} posts loaded)`;
 }
 
 document.getElementById('generate').addEventListener('click', runCampaignBuilder);
