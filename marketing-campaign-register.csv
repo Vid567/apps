@@ -1,0 +1,11 @@
+app,post_id,bluesky_status,bluesky_batch,threads_status,threads_batch,notes
+AI Stamp Collection Scanner,STAMP-001,queued,BSKY-001,not_used,,First Bluesky bulk batch
+DailyCashPlan,DCP-001,queued,BSKY-001,not_used,,First Bluesky bulk batch
+PantryPlan,PP-001,queued,BSKY-001,not_used,,First Bluesky bulk batch
+AI Coin Collection Scanner,COIN-001,queued,BSKY-001,not_used,,First Bluesky bulk batch
+AI Stamp Collection Scanner,STAMP-002,queued,BSKY-001,not_used,,First Bluesky bulk batch
+DailyCashPlan,DCP-002,queued,BSKY-001,not_used,,First Bluesky bulk batch
+PantryPlan,PP-002,queued,BSKY-001,not_used,,First Bluesky bulk batch
+AI Coin Collection Scanner,COIN-002,queued,BSKY-001,not_used,,First Bluesky bulk batch
+AI Stamp Collection Scanner,STAMP-003,queued,BSKY-001,not_used,,First Bluesky bulk batch
+DailyCashPlan,DCP-003,queued,BSKY-001,not_used,,First Bluesky bulk batch
