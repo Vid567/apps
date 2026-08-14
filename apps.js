@@ -28,10 +28,10 @@ const products = [
   {
     name: "AI Coin Collection Scanner",
     description: "Create a structured coin inventory from collection photos, review coin details, and flag items that may deserve further research.",
-    url: "https://github.com/Vid567/ai-coin-collection-scanner",
-    cta: "View project",
+    url: "https://vid567.github.io/ai-coin-collection-scanner/en/",
+    cta: "Try Browser Beta",
     category: "Collecting",
-    status: "Browser Beta — Coming Soon",
+    status: "Browser Beta v3.1",
     icon: "coin"
   }
 ];
