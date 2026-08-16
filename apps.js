@@ -20,7 +20,7 @@ const products = [
     name: "AI Stamp Collection Scanner",
     description: "Turn your stamp collection into a clear, structured digital stamp inventory.",
     url: "https://bit.ly/AIStampScannerApp",
-    cta: "Try Browser Beta",
+    cta: "Try Free Browser Beta",
     category: "Collecting",
     status: "Browser Beta v1.0",
     icon: "stamp"
@@ -29,7 +29,7 @@ const products = [
     name: "AI Coin Collection Scanner",
     description: "Create a structured coin inventory from collection photos, review coin details, and flag items that may deserve further research.",
     url: "https://vid567.github.io/ai-coin-collection-scanner/en/",
-    cta: "Try Browser Beta",
+    cta: "Try Free Browser Beta",
     category: "Collecting",
     status: "Browser Beta v3.1",
     icon: "coin"
