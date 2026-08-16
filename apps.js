@@ -3,7 +3,7 @@ const products = [
   {
     name: "DailyCashPlan",
     description: "A simple overview of your income, expenses and debts so you can see where your money stands.",
-    url: "https://bit.ly/dailycashplan",
+    url: "https://vid567.github.io/dailycashplan/",
     cta: "Open DailyCashPlan",
     category: "Finance",
     icon: "cash"
@@ -11,7 +11,7 @@ const products = [
   {
     name: "PantryPlan",
     description: "Keep track of what you have at home and make grocery shopping easier.",
-    url: "https://bit.ly/pantryplan",
+    url: "https://vid567.github.io/pantryplan/",
     cta: "Open PantryPlan",
     category: "Home",
     icon: "pantry"
@@ -19,7 +19,7 @@ const products = [
   {
     name: "AI Stamp Collection Scanner",
     description: "Turn your stamp collection into a clear, structured digital stamp inventory.",
-    url: "https://bit.ly/AIStampScannerApp",
+    url: "https://vid567.github.io/ai-stamp-collection-scanner/",
     cta: "Try Free Browser Beta",
     category: "Collecting",
     status: "Browser Beta v1.0",
@@ -28,7 +28,7 @@ const products = [
   {
     name: "AI Coin Collection Scanner",
     description: "Create a structured coin inventory from collection photos, review coin details, and flag items that may deserve further research.",
-    url: "https://vid567.github.io/ai-coin-collection-scanner/en/",
+    url: "https://vid567.github.io/ai-coin-collection-scanner/",
     cta: "Try Free Browser Beta",
     category: "Collecting",
     status: "Browser Beta v3.1",
